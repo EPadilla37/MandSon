@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="stylesheet"
+        href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
+    <title>Inventory System</title>
+</head>
+<body>
+    <nav>
+        <div class="navbar">
+            <a href="/" class="logo">MandSon Inventory System</a>
+            <div class="navbar-right">
+                <a href="">Logout</a>    
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <!-- <script src="/static/js/app.js"></script> -->
+</body>
+</html>
