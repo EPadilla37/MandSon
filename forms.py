@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField
-from wtforms.validators import DataRequired
+from wtforms import StringField, PasswordField, IntegerField, DecimalField
+from wtforms.validators import DataRequired, NumberRange
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -10,3 +10,8 @@ class AddPieceForm(FlaskForm):
     product_name = StringField('Product Name', validators=[DataRequired()])
     quantity = IntegerField('Quantity', validators=[DataRequired()])
     price = IntegerField('Price', validators=[DataRequired()])
+
+class EditProductForm(FlaskForm):
+    product_name = StringField('Product Name', validators=[DataRequired()])
+    quantity = IntegerField('Quantity', validators=[DataRequired(), NumberRange(min=0)])
+    price = DecimalField('Price', validators=[DataRequired(), NumberRange(min=0)])

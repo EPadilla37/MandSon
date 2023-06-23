@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.product_name.label }}
+        {{ form.product_name(value=product.ProductName) }}
+    </div>
+    <div>
+        {{ form.quantity.label }}
+        {{ form.quantity(value=product.Quantity) }}
+    </div>
+    <div>
+        {{ form.price.label }}
+        {{ form.price(value=product.Price) }}
+    </div>
+    <div>
+        <button type="submit" class="btn btn-success">Update</button>
+        <a type="button" class="btn btn-danger" href="/">Cancel</a>
+    </div>
+</form>
+{% endblock %}
+
+
