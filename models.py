@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from sqlalchemy.dialects.postgresql import BYTEA
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -30,6 +31,7 @@ class Inventory(db.Model):
     Price = db.Column(db.Numeric, nullable=False)
     AddedBy = db.Column(db.Integer, db.ForeignKey('users.UserID'), default = None)
     RemovedBy = db.Column(db.Integer, db.ForeignKey('users.UserID'), default = None)
+    Image = db.Column(db.LargeBinary, nullable=True)
 
 
 class DamagedPieces(db.Model):

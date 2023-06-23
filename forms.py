@@ -13,5 +13,5 @@ class AddPieceForm(FlaskForm):
 
 class EditProductForm(FlaskForm):
     product_name = StringField('Product Name', validators=[DataRequired()])
-    quantity = IntegerField('Quantity', validators=[DataRequired(), NumberRange(min=0)])
+    quantity = IntegerField('Quantity', validators=[DataRequired()])
     price = DecimalField('Price', validators=[DataRequired(), NumberRange(min=0)])
