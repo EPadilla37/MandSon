@@ -13,7 +13,12 @@
         <div class="navbar">
             <a href="/" class="logo">MandSon Inventory System</a>
             <div class="navbar-right">
-                <a href="">Logout</a>    
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('index') }}">Home</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                {% endif %}   
             </div>
         </div>
     </nav>

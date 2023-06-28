@@ -1,11 +1,13 @@
-from flask import Flask, render_template, request, jsonify, redirect, flash, g, request, send_file
+from flask import Flask, render_template, request, jsonify, redirect, flash, g, request, send_file, url_for, session
 import io
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Inventory
-from forms import AddPieceForm, LoginForm, EditProductForm
+from models import db, Inventory, User
+from forms import AddPieceForm, LoginForm, EditProductForm, AddUserForm
 from flask_migrate import Migrate
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from werkzeug.security import check_password_hash
+import bcrypt
 from base64 import b64decode
-import base64
 import requests
 app = Flask(__name__)
 
@@ -16,26 +18,83 @@ app.config['SECRET_KEY'] = 'secret'
 
 
 db.init_app(app)
-
 migrate = Migrate(app,db)
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 with app.app_context():
     db.create_all()
 
+
+###################################################################################################
+#User login/logout raoutes
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    return redirect(url_for('login'))
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+@login_manager.request_loader
+def load_user_from_request(request):
+    user_id = session.get('user_id')
+    if user_id:
+        return User.query.get(user_id)
+    return None
+
+@app.route('/login', methods = ["GET", "POST"])
+def login(): 
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(Username=form.username.data).first()
+        if user and bcrypt.checkpw(form.password.data.encode('utf-8'), user.Password.encode('utf-8')):
+            login_user(user)
+            next_page = request.args.get('next')
+            return redirect(next_page or url_for('index'))
+        else:
+            flash('Invalid email or password.', 'error')
+    return render_template('login.html', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+@app.route('/add-user', methods=['GET', 'POST'])
+def add_user():
+    form = AddUserForm()
+    if form.validate_on_submit():
+        existing_user = User.query.filter_by(Username=form.username.data).first()
+        if existing_user:
+            flash('Username already exists. Please choose a different username.', 'danger')
+        else:
+            hashed_password = bcrypt.hashpw(form.password.data.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            new_user = User(
+                Username=form.username.data,
+                Password=hashed_password
+            )
+            db.session.add(new_user)
+            db.session.commit()
+            flash('New user added successfully!', 'success')
+            return redirect(url_for('index'))
+    return render_template('add-user.html', form=form)
+
+###################################################################################################
 # Route to render the index.html page
 @app.route('/')
+@login_required
 def index():
     inventory_items = Inventory.query.all()
     return render_template('index.html', inventory_items=inventory_items)
-
-############################################################################################
-#Add/Edit inventory Routes 
+#Add/Edit/Inventory Routes 
 
 def generate_barcode(product_name):
     url = 'https://barcodeapi.org/{}'
     params = {
         'text': product_name,
-        'type': product_name,
+        'type': 'code128',
         'scale': 1,
         'height': 100,
         'width': 2,
@@ -43,7 +102,7 @@ def generate_barcode(product_name):
     }
 
     try:
-        response = requests.get(url.format(params['type']), params=params)
+        response = requests.get(url.format(params['text']), params=params)
         response.raise_for_status()  # Raise an exception if the request was unsuccessful
         return response.content
     except requests.exceptions.RequestException as e:
@@ -117,7 +176,7 @@ def view_barcode(product_id):
     product = Inventory.query.get_or_404(product_id)
     return render_template('view-barcode.html', product=product)
 
-
+###################################################################################################
 
 if __name__ == '__main__':
     app.run()

@@ -20,7 +20,18 @@ class User(db.Model):
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.Password, password)
+    
+    def is_active(self):
+        return 'user_id' in session and session['user_id'] == self.UserID
 
+    def get_id(self):
+        return str(self.UserID)
+    
+    def is_authenticated(self):
+        return True
+    
+    def is_anonymous(self):
+        return False
 
 class Inventory(db.Model):
     __tablename__ = 'inventory'
@@ -34,19 +45,19 @@ class Inventory(db.Model):
     Image = db.Column(db.LargeBinary, nullable=True)
 
 
-class DamagedPieces(db.Model):
-    __tablename__ = 'damaged'
+# class DamagedPieces(db.Model):
+#     __tablename__ = 'damaged'
 
-    DamagedID = db.Column(db.Integer, primary_key=True)
-    ProductID = db.Column(db.Integer, db.ForeignKey('inventory.ProductID'))
-    Description = db.Column(db.Text, nullable=False)
-    Quantity = db.Column(db.Integer, nullable=False)
+#     DamagedID = db.Column(db.Integer, primary_key=True)
+#     ProductID = db.Column(db.Integer, db.ForeignKey('inventory.ProductID'))
+#     Description = db.Column(db.Text, nullable=False)
+#     Quantity = db.Column(db.Integer, nullable=False)
 
 
-class AddedPieces(db.Model):
-    __tablename__ = 'added'
+# class AddedPieces(db.Model):
+#     __tablename__ = 'added'
 
-    AddedID = db.Column(db.Integer, primary_key=True)
-    ProductID = db.Column(db.Integer, db.ForeignKey('inventory.ProductID'))
-    Description = db.Column(db.Text, nullable=False)
-    Quantity = db.Column(db.Integer, nullable=False)
+#     AddedID = db.Column(db.Integer, primary_key=True)
+#     ProductID = db.Column(db.Integer, db.ForeignKey('inventory.ProductID'))
+#     Description = db.Column(db.Text, nullable=False)
+#     Quantity = db.Column(db.Integer, nullable=False)

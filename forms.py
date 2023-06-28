@@ -15,3 +15,7 @@ class EditProductForm(FlaskForm):
     product_name = StringField('Product Name', validators=[DataRequired()])
     quantity = IntegerField('Quantity', validators=[DataRequired()])
     price = DecimalField('Price', validators=[DataRequired(), NumberRange(min=0)])
+
+class AddUserForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators= [DataRequired()])
