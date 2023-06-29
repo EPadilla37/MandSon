@@ -30,8 +30,10 @@
   </table>
 
   <a href="/add-piece" class="btn btn-primary">Add New Piece</a>
-  <a href="{{ url_for('add_user') }}" class="btn btn-primary">Add New User</a>  
 
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="{{ url_for('static', filename='js/scanner.js') }}"></script>
 {% endblock %}
 
 
