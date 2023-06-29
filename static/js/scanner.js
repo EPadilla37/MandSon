@@ -1,12 +1,12 @@
 $(document).ready(function() {
-    var barcode = '';
-    var keyEvents = 0;
+    let barcode = '';
+    let keyEvents = 0;
 
     $(document).keypress(function(e) {
-        var charCode = (typeof e.which === "number") ? e.which : e.keyCode;
-        var charStr = String.fromCharCode(charCode);
+        let charCode = (typeof e.which === "number") ? e.which : e.keyCode;
+        let charStr = String.fromCharCode(charCode);
 
-        barcode += charStr;
+        barcode += charStr.toUpperCase();
         keyEvents++;
     });
 

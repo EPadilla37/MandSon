@@ -87,7 +87,7 @@ def add_piece():
     form = AddPieceForm()
     if form.validate_on_submit():
         existing_piece = Inventory.query.filter_by(ProductName=form.product_name.data).first()
-        product_name = form.product_name.data
+        product_name = form.product_name.data.upper()
         barcode_image = generate_barcode(product_name)
         if barcode_image:
             if existing_piece:
@@ -95,7 +95,7 @@ def add_piece():
                 db.session.commit()
             else:
                 new_piece = Inventory(
-                    ProductName=form.product_name.data,
+                    ProductName=form.product_name.data.upper(),
                     Quantity=form.quantity.data,
                     Price=form.price.data,
                     Image=barcode_image
@@ -159,6 +159,7 @@ def view_barcode(product_id):
     return render_template('view-barcode.html', product=product)
 
 def process_scan(barcode):
+
     inventory_item = Inventory.query.filter_by(ProductName=barcode).first()
     
     if inventory_item:
