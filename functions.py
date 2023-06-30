@@ -169,9 +169,35 @@ def process_scan(barcode):
     else:
         flash('Barcode not found in inventory, Please add a new product', 'error')
 
+def process_scan_sub(barcode):
+
+    inventory_item = Inventory.query.filter_by(ProductName=barcode).first()
+    
+    if inventory_item:
+        inventory_item.Quantity -= 1
+        db.session.commit()
+        flash('Quantity updated successfully', 'success' )
+    else:
+        flash('Barcode not found in inventory, Please add a new product', 'error')
+
 @login_required
 def scan():
     barcode = request.form['barcode'].strip().replace('/r', '')
     process_scan(barcode)
     return redirect(url_for('index'))
 
+@login_required
+def scan_sub():
+    barcode = request.form['barcode'].strip().replace('/r', '')
+    process_scan_sub(barcode)
+    return redirect(url_for('index'))
+
+@login_required
+def render_addition():
+    inventory_items = Inventory.query.all()
+    return render_template('scan-add.html', inventory_items = inventory_items)
+
+@login_required
+def render_subtraction():
+    inventory_items = Inventory.query.all()
+    return render_template('scan-sub.html', inventory_items = inventory_items)
