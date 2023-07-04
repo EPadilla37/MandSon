@@ -9,9 +9,10 @@ from base64 import b64decode
 import requests
 import bcrypt
 import io
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://gbroswfsxwhhlt:dafd05639763001ae2c29545b676bdb2d12499c8ac3b75339f30f646ff872139@ec2-54-208-11-146.compute-1.amazonaws.com:5432/deggralu1tkvvv'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = 'secret'
@@ -45,7 +46,12 @@ app.route('/scan', methods=['POST'])(scan)
 app.route('/scan_sub', methods=['POST'])(scan_sub)
 
 
+def seed_database():
+    import seed
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        if app.config['ENV'] == 'development':
+            seed_database()
     app.run()
