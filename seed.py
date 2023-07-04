@@ -4,7 +4,7 @@ from models import User, db
 from flask_bcrypt import Bcrypt
 
 # Create the engine and session
-engine = create_engine('https://morning-ravine-37812-cd8dad9f58ad.herokuapp.com/')  # Replace 'your_heroku_database_url' with the actual Heroku database URL
+engine = create_engine('postgres://gbroswfsxwhhlt:dafd05639763001ae2c29545b676bdb2d12499c8ac3b75339f30f646ff872139@ec2-54-208-11-146.compute-1.amazonaws.com:5432/deggralu1tkvvv')
 Session = sessionmaker(bind=engine)
 session = Session()
 
