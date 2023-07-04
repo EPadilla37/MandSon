@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<link rel="stylesheet" type="text/css" href="/static/css/style.css">
   <h1>Inventory Management System</h1>
+  <select id="sort" onchange="sortTable()">
+    <option value="name_asc">Sort by Name (Ascending)</option>
+    <option value="name_desc">Sort by Name (Descending)</option>
+    <option value="quantity_asc">Sort by Quantity (Ascending)</option>
+    <option value="quantity_desc">Sort by Quantity (Descending)</option>
+  </select>
   <table class="table">
     <thead>
       <tr>
@@ -14,15 +21,15 @@
     </thead>
     <tbody>
       {% for item in inventory_items %}
-      <tr>
-        <td>{{ item.ProductName }}</td>
-        <td>{{ item.Quantity }}</td>
-        <td>{{ item.Price }}</td>
-        <td>
+      <tr class="table-row"> <!-- Add the class name "table-row" to the rows -->
+        <td class="{{ getRowClass(item.Quantity)}}">{{ item.ProductName }}</td>
+        <td class="{{ getRowClass(item.Quantity)}}">{{ item.Quantity }}</td>
+        <td class="{{ getRowClass(item.Quantity)}}">{{ item.Price }}</td>
+        <td class="{{ getRowClass(item.Quantity)}}">
           <a href="{{ url_for('edit_piece', product_id=item.ProductID) }}">Edit</a>
         </td>
         {% if item.Image %}
-        <td><a href="{{ url_for('view_image', inventory_id=item.ProductID) }}">View Barcode</a></td>
+        <td class="{{ getRowClass(item.Quantity)}}"><a href="{{ url_for('view_image', inventory_id=item.ProductID) }}">View Barcode</a></td>
         {% endif %}
       </tr>
       {% endfor %}
@@ -31,13 +38,11 @@
 
   <a href="/add-piece" class="btn btn-primary">Add New Piece</a>
   <div>
-    <a href="render_add" id="addBtn" class="btn btn-primary">Add</a>
-    <a href="render_sub" id="subtractBtn" class="btn btn-primary">Subtract</a>
+    <a href="render_add" id="addBtn" class="btn btn-success">Add</a>
+    <a href="render_sub" id="subtractBtn" class="btn btn-danger">Subtract</a>
   </div>
 
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <!-- <script src="{{ url_for('static', filename='js/scanner.js') }}"></script> -->
+  <script src="{{ url_for('static', filename='js/sort.js') }}"></script> <!-- Include the correct file name for sort.js -->
 {% endblock %}
-
-

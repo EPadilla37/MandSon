@@ -54,10 +54,18 @@ def add_user():
             return redirect(url_for('index'))
     return render_template('add-user.html', form=form)
 
+def getRowClass(quantity):
+    if quantity <= 0:
+        return "table-danger"
+    elif quantity <= 5:
+        return "table-warning"
+    else:
+        return ""
+
 @login_required
 def index():
     inventory_items = Inventory.query.all()
-    return render_template('index.html', inventory_items=inventory_items)
+    return render_template('index.html', inventory_items=inventory_items, getRowClass =getRowClass)
 
 class BarcodeGenerationError(Exception):
     pass
@@ -195,9 +203,9 @@ def scan_sub():
 @login_required
 def render_addition():
     inventory_items = Inventory.query.all()
-    return render_template('scan-add.html', inventory_items = inventory_items)
+    return render_template('scan-add.html', inventory_items = inventory_items, getRowClass =getRowClass)
 
 @login_required
 def render_subtraction():
     inventory_items = Inventory.query.all()
-    return render_template('scan-sub.html', inventory_items = inventory_items)
+    return render_template('scan-sub.html', inventory_items = inventory_items, getRowClass =getRowClass)
