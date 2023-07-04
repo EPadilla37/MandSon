@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify, redirect, flash, g, request, send_file, url_for, session
-from functions import getRowClass, unauthorized_callback, render_addition, render_subtraction, load_user, load_user_from_request, generate_barcode, add_piece, delete_piece, scan, process_scan, scan_sub, process_scan_sub, view_image, edit_piece, view_barcode, login, logout, add_user, index
+from functions import getRowClass, unauthorized_callback,render_addition, render_subtraction, load_user, load_user_from_request, generate_barcode, add_piece, delete_piece, scan, process_scan, scan_sub, process_scan_sub,view_image, edit_piece, view_barcode, login, logout, add_user, index
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from forms import AddPieceForm, LoginForm, EditProductForm, AddUserForm
 from flask_sqlalchemy import SQLAlchemy
@@ -20,9 +20,6 @@ app.config['SECRET_KEY'] = 'secret'
 db.init_app(app)
 migrate = Migrate(app, db)
 login_manager = LoginManager(app)
-
-# Call connect_db function to initialize the database connection
-connect_db(app)
 
 # User login/logout routes
 login_manager.unauthorized_handler(unauthorized_callback)
@@ -47,6 +44,7 @@ app.route('/render_add')(render_addition)
 app.route('/render_sub')(render_subtraction)
 app.route('/scan', methods=['POST'])(scan)
 app.route('/scan_sub', methods=['POST'])(scan_sub)
+
 
 def seed_database():
     import seed
