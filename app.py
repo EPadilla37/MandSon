@@ -11,7 +11,8 @@ import bcrypt
 import io
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:padilla@localhost/mandson_db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:padilla@localhost/mandson_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://xuekxciwtingpp:179f85749e57cd32788e9fd5d0b77f23d0aef3e9e29536524365808583e0916b@ec2-52-6-117-96.compute-1.amazonaws.com:5432/dbk7trv20p96j'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = 'secret'
