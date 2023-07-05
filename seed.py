@@ -1,23 +1,29 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from models import User, db
-from flask_bcrypt import Bcrypt
-import os
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from models import db, User
+import bcrypt
 
-# Create the engine and session
-engine = create_engine(os.environ.get('DATABASE_URL'))
-Session = sessionmaker(bind=engine)
-session = Session()
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:padilla@localhost/mandson_db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ECHO'] = True
+app.config['SECRET_KEY'] = 'secret'
 
-# Create and insert user data
-bcrypt = Bcrypt()
+db.init_app(app)
 
-user1 = User(Username='erniepad', Password=bcrypt.generate_password_hash('mandson7').decode('utf-8'))
-user2 = User(Username='norma', Password=bcrypt.generate_password_hash('mandson7').decode('utf-8'))
-user3 = User(Username='wicho', Password=bcrypt.generate_password_hash('mandson7').decode('utf-8'))
+with app.app_context():
+    db.create_all()
+    print("Tables created successfully.")
 
-session.add_all([user1, user2, user3])
-session.commit()
+    hashed_password = bcrypt.hashpw('mandson7'.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
-# Close the session
-session.close()
+    #create the user
+    user = User(
+        Username = 'erniepad',
+        Password = hashed_password
+    )
+
+    db.session.add(user)
+    db.session.commit()
+
+    print("Tables created and user added")

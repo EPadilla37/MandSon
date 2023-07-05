@@ -3,16 +3,15 @@ from functions import getRowClass, unauthorized_callback,render_addition, render
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from forms import AddPieceForm, LoginForm, EditProductForm, AddUserForm
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Inventory, User, connect_db
+from models import db, Inventory, User
 from flask_migrate import Migrate
 from base64 import b64decode
 import requests
 import bcrypt
 import io
-import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://' + os.environ['DATABASE_URL'][11:]
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:padilla@localhost/mandson_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = 'secret'
@@ -46,12 +45,7 @@ app.route('/scan', methods=['POST'])(scan)
 app.route('/scan_sub', methods=['POST'])(scan_sub)
 
 
-def seed_database():
-    import seed
-
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        if app.config['ENV'] == 'development':
-            seed_database()
+    # with app.app_context():
+    #     db.create_all()
     app.run()
