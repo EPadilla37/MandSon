@@ -2,6 +2,15 @@
 
 {% block content %}
   <h1>Inventory Management System</h1>
+  <div class="toolbar">
+    <select id="sort" onchange="sortTable()">
+      <option value="name_asc">Sort by Name (Ascending)</option>
+      <option value="name_desc">Sort by Name (Descending)</option>
+      <option value="quantity_asc">Sort by Quantity (Ascending)</option>
+      <option value="quantity_desc">Sort by Quantity (Descending)</option>
+    </select>
+    <a href="/add-piece" class="btn btn-primary">Add New Piece</a>
+  </div>
   <table class="table">
     <thead>
       <tr>
@@ -29,7 +38,7 @@
     </tbody>
   </table>
 
-  <a href="/add-piece" class="btn btn-primary">Add New Piece</a>
+  <!-- <a href="/add-piece" class="btn btn-primary">Add New Piece</a> -->
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="{{ url_for('static', filename='js/scanner.js') }}"></script>

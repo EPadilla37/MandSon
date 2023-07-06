@@ -1,5 +1,9 @@
-from flask import render_template, request, jsonify, redirect, flash, g, request, send_file, url_for, session
+from flask import render_template, request, jsonify, redirect, flash, g, request, send_file, url_for, session, make_response, send_from_directory
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.utils import ImageReader
 import io
+from io import BytesIO
 import requests
 import logging
 from flask_login import login_user, logout_user, login_required
@@ -61,6 +65,23 @@ def getRowClass(quantity):
         return "table-warning"
     else:
         return ""
+    
+@login_required
+def manage_users():
+    users = User.query.all()
+    return render_template('manage_users.html', users=users)
+
+
+@login_required
+def delete_user(user_id):
+    user = User.query.get(user_id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        flash("User deleted successfully", 'success')
+    else:
+        flash('User not found', 'error')
+    return redirect(url_for('manage_users'))
 
 @login_required
 def index():
@@ -187,6 +208,57 @@ def process_scan_sub(barcode):
         flash('Quantity updated successfully', 'success' )
     else:
         flash('Barcode not found in inventory, Please add a new product', 'error')
+
+@login_required
+def print_barcodes():
+    # Retrieve all images from the database
+    images = Inventory.query.filter(Inventory.Image.isnot(None)).all()
+
+    # Create a new PDF document
+    buffer = BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=letter)
+
+    # Set the font and font size
+    pdf.setFont("Helvetica", 12)
+
+    # Define the position and size of each barcode
+    x = 50
+    y = 700
+    barcode_width = 200
+    barcode_height = 100
+
+    # Iterate over the images and add them to the PDF
+    for image in images:
+        # Convert the image data to an ImageReader object
+        img_data = BytesIO(image.Image)
+        img_reader = ImageReader(img_data)
+
+        # Draw the image onto the PDF canvas
+        pdf.drawImage(img_reader, x, y, width=barcode_width, height=barcode_height)
+
+        # Move to the next position
+        y -= barcode_height + 20
+
+        # Add a label or other information for each barcode, if desired
+        pdf.drawString(x, y, image.ProductName)
+
+        # Move to the next position
+        y -= 40
+
+        # Add a page break if necessary
+        if y <= 50:
+            pdf.showPage()
+            y = 700
+
+    # Save the PDF document
+    pdf.save()
+    buffer.seek(0)
+    response = make_response(buffer.getvalue())
+
+    response.headers.set('Content-Disposition', 'attachment', filename='barcodes.pdf')
+    response.headers.set('Content-Type', 'application/pdf')
+
+    return response
 
 @login_required
 def scan():
