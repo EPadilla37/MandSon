@@ -3,13 +3,20 @@
 {% block content %}
 <link rel="stylesheet" type="text/css" href="/static/css/style.css">
   <h1>Inventory Management System</h1>
-  <select id="sort" onchange="sortTable()">
-    <option value="name_asc">Sort by Name (Ascending)</option>
-    <option value="name_desc">Sort by Name (Descending)</option>
-    <option value="quantity_asc">Sort by Quantity (Ascending)</option>
-    <option value="quantity_desc">Sort by Quantity (Descending)</option>
-  </select>
-  <table class="table">
+  <div class="toolbar">
+    <div class="sort-menu">
+      <select id="sort" onchange="sortTable()">
+        <option value="name_asc">Sort by Name (Ascending)</option>
+        <option value="name_desc">Sort by Name (Descending)</option>
+        <option value="quantity_asc">Sort by Quantity (Ascending)</option>
+        <option value="quantity_desc">Sort by Quantity (Descending)</option>
+      </select>
+    </div>
+    <div class="add-piece-button">
+      <a href="/add-piece" class="btn btn-primary">Add New Piece</a>
+    </div>
+  </div>
+  <table class="table highlight-table">
     <thead>
       <tr>
         <th>Product Name</th>
@@ -21,9 +28,9 @@
     </thead>
     <tbody>
       {% for item in inventory_items %}
-      <tr class="table-row"> <!-- Add the class name "table-row" to the rows -->
+      <tr class="table-row"> 
         <td class="{{ getRowClass(item.Quantity)}}">{{ item.ProductName }}</td>
-        <td class="{{ getRowClass(item.Quantity)}}">{{ item.Quantity }}</td>
+        <td class="{{ getRowClass(item.Quantity)}} bold">{{ item.Quantity }}</td>
         <td class="{{ getRowClass(item.Quantity)}}">{{ item.Price }}</td>
         <td class="{{ getRowClass(item.Quantity)}}">
           <a href="{{ url_for('edit_piece', product_id=item.ProductID) }}">Edit</a>
@@ -35,14 +42,22 @@
       {% endfor %}
     </tbody>
   </table>
+  <a href="{{ url_for('print_barcodes') }}" id="print_barcodes">
+    <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#6c757d" width="20" height="20">
+      <path d="M0 0h24v24H0z" fill="none"/>
+      <path d="M17 14h-4v4h-2v-4H7v-2h4V7h2v4h4z"/>
+    </svg>
+    Print All Barcodes
+  </a>
+  
 
-  <a href="/add-piece" class="btn btn-primary">Add New Piece</a>
+  
   <div>
-    <a href="render_add" id="addBtn" class="btn btn-success">Add</a>
-    <a href="render_sub" id="subtractBtn" class="btn btn-danger">Subtract</a>
+    <a href="render_add" id="addBtn" class="btn btn-success spaced">Add</a>
+    <a href="render_sub" id="subtractBtn" class="btn btn-danger spaced">Subtract</a>
   </div>
 
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="{{ url_for('static', filename='js/sort.js') }}"></script> <!-- Include the correct file name for sort.js -->
+  <script src="{{ url_for('static', filename='js/sort.js') }}"></script>
 {% endblock %}

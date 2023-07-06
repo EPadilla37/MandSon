@@ -1,15 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Add New User</h1>
-  <form method="POST" action="{{ url_for('add_user') }}">
-    {{ form.csrf_token }}
-    <div class="form-group">
-      {{ form.username.label }} {{ form.username }}
-    </div>
-    <div class="form-group">
-      {{ form.password.label }} {{ form.password }}
-    </div>
-    <button type="submit" class="btn btn-primary">Add User</button>
-  </form>
+  <div class="login-container">
+    <h1>Add New User</h1>
+    <form method="POST" action="{{ url_for('add_user') }}" class="login-form">
+      {{ form.csrf_token }}
+      <div class="form-group">
+        <label for="{{ form.username.id }}">{{ form.username.label }}</label>
+        {{ form.username(class="form-control") }}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.password.id }}">{{ form.password.label }}</label>
+        {{ form.password(class="form-control") }}
+      </div>
+      <button type="submit" class="btn btn-primary">Add User</button>
+    </form>
+  </div>
 {% endblock %}

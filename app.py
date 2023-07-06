@@ -1,21 +1,25 @@
 from flask import Flask, render_template, request, jsonify, redirect, flash, g, request, send_file, url_for, session
-from functions import getRowClass, unauthorized_callback,render_addition, render_subtraction, load_user, load_user_from_request, generate_barcode, add_piece, delete_piece, scan, process_scan, scan_sub, process_scan_sub,view_image, edit_piece, view_barcode, login, logout, add_user, index
+from functions import getRowClass, unauthorized_callback,render_addition, render_subtraction,delete_user, manage_users, print_barcodes,load_user, load_user_from_request, generate_barcode, add_piece, delete_piece, scan, process_scan, scan_sub, process_scan_sub,view_image, edit_piece, view_barcode, login, logout, add_user, index
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from forms import AddPieceForm, LoginForm, EditProductForm, AddUserForm
 from flask_sqlalchemy import SQLAlchemy
 from models import db, Inventory, User
+from flask_wtf import CSRFProtect
 from flask_migrate import Migrate
 from base64 import b64decode
 import requests
 import bcrypt
 import io
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:padilla@localhost/mandson_db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:padilla@localhost/mandson_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = 'secret'
 
+# csrf = CSRFProtect(app)
 db.init_app(app)
 migrate = Migrate(app, db)
 login_manager = LoginManager(app)
@@ -29,6 +33,8 @@ login_manager.request_loader(load_user_from_request)
 app.route('/login', methods=['GET', 'POST'])(login)
 app.route('/logout')(logout)
 app.route('/add-user', methods=['GET', 'POST'])(add_user)
+app.route('/delete-user/<int:user_id>', methods=['POST'])(delete_user)
+app.route('/manage-users', methods=['GET'])(manage_users)
 
 app.route('/')(index)
 
@@ -44,8 +50,10 @@ app.route('/render_sub')(render_subtraction)
 app.route('/scan', methods=['POST'])(scan)
 app.route('/scan_sub', methods=['POST'])(scan_sub)
 
+app.route('/print-barcodes', methods=['GET'])(print_barcodes)
+
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
     app.run()

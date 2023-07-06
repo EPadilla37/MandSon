@@ -1,30 +1,35 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form method="POST" action="">
+<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+
+<h1>Edit Piece</h1>
+<div class="edit-piece-form">
+  <form method="POST" action="">
     {{ form.hidden_tag() }}
-    <div>
-        {{ form.product_name.label }}
-        {{ form.product_name(value=product.ProductName) }}
+    <div class="form-group">
+      {{ form.product_name.label }}
+      {{ form.product_name(value=product.ProductName, class='form-control') }}
     </div>
-    <div>
-        {{ form.quantity.label }}
-        {{ form.quantity(value=product.Quantity) }}
+    <div class="form-group">
+      {{ form.quantity.label }}
+      {{ form.quantity(value=product.Quantity, class='form-control') }}
     </div>
-    <div>
-        {{ form.price.label }}
-        {{ form.price(value=product.Price) }}
+    <div class="form-group">
+      {{ form.price.label }}
+      {{ form.price(value=product.Price, class='form-control') }}
     </div>
-    <div>
+    <div class="button-group">
+      <div class="button-row">
         <button type="submit" class="btn btn-success">Update</button>
-        <a type="button" class="btn btn-primary" href="/">Cancel</a>
+      </div>
+      <div class="button-row">
+        <a type="button" class="btn btn-primary btn-cancel" href="/">Cancel</a>
+      </div>
+      <div class="button-row">
+        <button type="submit" class="btn btn-danger">Delete</button>
+      </div>
     </div>
-</form>
-
-<form method="POST" action="{{ url_for('delete_piece', product_id=product.ProductID) }}" onsubmit="return confirm('Are you sure you want to delete this product?')">
-    {{ form.hidden_tag() }}
-    <button type="submit" class="btn btn-danger">Delete</button>
-</form>
+  </form>
+</div>
 {% endblock %}
-
-
