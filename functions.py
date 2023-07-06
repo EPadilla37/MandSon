@@ -11,6 +11,7 @@ from models import db, Inventory, User
 from forms import AddPieceForm, LoginForm, EditProductForm, AddUserForm
 import bcrypt
 
+
 def unauthorized_callback():
     return redirect(url_for('login'))
 
@@ -187,28 +188,6 @@ def view_barcode(product_id):
     product = Inventory.query.get_or_404(product_id)
     return render_template('view-barcode.html', product=product)
 
-def process_scan(barcode):
-
-    inventory_item = Inventory.query.filter_by(ProductName=barcode).first()
-    
-    if inventory_item:
-        inventory_item.Quantity += 1
-        db.session.commit()
-        flash('Quantity updated successfully', 'success' )
-    else:
-        flash('Barcode not found in inventory, Please add a new product', 'error')
-
-def process_scan_sub(barcode):
-
-    inventory_item = Inventory.query.filter_by(ProductName=barcode).first()
-    
-    if inventory_item:
-        inventory_item.Quantity -= 1
-        db.session.commit()
-        flash('Quantity updated successfully', 'success' )
-    else:
-        flash('Barcode not found in inventory, Please add a new product', 'error')
-
 @login_required
 def print_barcodes():
     # Retrieve all images from the database
@@ -260,15 +239,39 @@ def print_barcodes():
 
     return response
 
+def process_scan(barcode):
+
+    inventory_item = Inventory.query.filter_by(ProductName=barcode).first()
+    
+    if inventory_item:
+        inventory_item.Quantity += 1
+        db.session.commit()
+        flash('Quantity updated successfully', 'success' )
+    else:
+        flash('Barcode not found in inventory, Please add a new product', 'error')
+
+def process_scan_sub(barcode):
+
+    inventory_item = Inventory.query.filter_by(ProductName=barcode).first()
+    
+    if inventory_item:
+        inventory_item.Quantity -= 1
+        db.session.commit()
+        flash('Quantity updated successfully', 'success' )
+    else:
+        flash('Barcode not found in inventory, Please add a new product', 'error')
+
 @login_required
 def scan():
     barcode = request.form['barcode'].strip().replace('/r', '')
+    print(f"Received barcode in scan: {barcode}")
     process_scan(barcode)
     return redirect(url_for('index'))
 
 @login_required
 def scan_sub():
     barcode = request.form['barcode'].strip().replace('/r', '')
+    print(f"Received barcode in scan: {barcode}")
     process_scan_sub(barcode)
     return redirect(url_for('index'))
 

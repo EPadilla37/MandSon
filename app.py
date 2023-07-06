@@ -19,7 +19,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = 'secret'
 
-csrf = CSRFProtect(app)
+# csrf = CSRFProtect(app)
 db.init_app(app)
 migrate = Migrate(app, db)
 login_manager = LoginManager(app)

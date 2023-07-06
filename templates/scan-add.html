@@ -11,7 +11,7 @@
     </select>
     <a href="/add-piece" class="btn btn-primary">Add New Piece</a>
   </div>
-  <table class="table">
+  <table class="table highlight-table">
     <thead>
       <tr>
         <th>Product Name</th>
@@ -23,7 +23,7 @@
     </thead>
     <tbody>
       {% for item in inventory_items %}
-      <tr>
+      <tr class="table-row">
         <td class="{{ getRowClass(item.Quantity)}}">{{ item.ProductName }}</td>
         <td class="{{ getRowClass(item.Quantity)}}">{{ item.Quantity }}</td>
         <td class="{{ getRowClass(item.Quantity)}}">{{ item.Price }}</td>
@@ -42,4 +42,5 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="{{ url_for('static', filename='js/scanner.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/sort.js') }}"></script>
 {% endblock %}

@@ -335,3 +335,6 @@ body {
   background-color: #f9f9f9;
 }
 
+table.highlight-table tr:hover {
+  background-color: #1bbad6d0;
+}
